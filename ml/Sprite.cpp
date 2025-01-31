@@ -106,11 +106,11 @@ void ml::Sprite::draw() {
 		glBindVertexArray(slice->vao);
 
 		glBindBuffer(GL_ARRAY_BUFFER, slice->vbo);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, 9 * sizeof(Slice::quad), &slice->vertices[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, 9 * sizeof(ml::quad), &slice->vertices[0]);
 
 		glBindBuffer(GL_ARRAY_BUFFER, slice->tex_vbo);
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, 9 * sizeof(Slice::quad), &slice->tex[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, 9 * sizeof(ml::quad), &slice->tex[0]);
 	}
 
 	glUniformMatrix4fv(shader->modelLoc, 1, GL_FALSE, &model[0][0]);
@@ -132,7 +132,12 @@ void ml::Sprite::draw() {
 		glDrawElements(GL_TRIANGLES, slice->vertices.size() * 6, GL_UNSIGNED_INT, 0);
 }
 
-void ml::Sprite::setNormalizedTexUV(int posX, int posY, int width, int height) {
+void ml::Sprite::setSlice() {
+	if (!slice)
+		slice = new Slice(size.x, size.y);
+}
+
+void ml::Sprite::setNormalizedTex(int posX, int posY, int width, int height) {
 	useTexture = true;
 
 	// top right

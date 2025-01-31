@@ -14,7 +14,7 @@ constexpr unsigned int INDICES[6] = {
 	1, 2, 3
 };
 
-constexpr glm::vec2 SCREEN_SIZE(600.f, 800.f);
+extern glm::vec2 SCREEN_SIZE;
 
 extern glm::vec2 TEXTURE_SPRITES_SIZE;
 extern float SLICE_BOARD_SIZE;

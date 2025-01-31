@@ -5,16 +5,18 @@
 #include <array>
 
 namespace ml {
+	struct quad {
+		glm::vec2 a, b, c, d;
+	};
+
 	class Slice {
 	public:
-		struct quad {
-			glm::vec2 a, b, c, d;
-		};
+		Slice(float x, float y);
 
 		static void init();
 
 		void setNormalizedTex(int posX, int posY, int width, int height, int corner);
-		void updateVertex(float sizeX, float sizeY);
+		void setVertexSize(float sizeX, float sizeY);
 
 		std::array<quad, 9> vertices;
 		std::array<quad, 9> tex;
