@@ -5,11 +5,11 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../stb/stb_image.h"
 
-#include "Global.h"
+#include "MLGlobals.h"
 
 #include <iostream>
 
-Shader* ml::Sprite::shader = nullptr;
+Shader ml::Sprite::shader(nullptr, nullptr);
 
 unsigned int ml::Sprite::vao = 1;
 unsigned int ml::Sprite::vbo = 1;
@@ -30,8 +30,8 @@ size(0.f)
 void ml::Sprite::init(const char* texturePath) {
 	ml::Slice::init();
 
-	shader = new Shader("dependencies/ml/shaders/sprite_vert.glsl", "dependencies/ml/shaders/sprite_frag.glsl");
-	glUseProgram(shader->id);
+	shader = Shader("dependencies/ml/shaders/sprite_vert.glsl", "dependencies/ml/shaders/sprite_frag.glsl");
+	glUseProgram(shader.id);
 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
@@ -53,7 +53,7 @@ void ml::Sprite::init(const char* texturePath) {
 
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
 	// texture
 
@@ -92,23 +92,27 @@ void ml::Sprite::init(const char* texturePath) {
 }
 
 void ml::Sprite::draw() {
+	bindShader(shader.id);
+	bindTexture(textureID);
+
 	if (!slice) {
 		model = glm::mat4(1.f);
 		model = glm::translate(model, glm::vec3(position, 0.f));
+		model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f));
 		model = glm::scale(model, glm::vec3(size, 0.f));
 
-		glUniformMatrix4fv(shader->modelLoc, 1, GL_FALSE, &model[0][0]);
+		glUniformMatrix4fv(shader.modelLoc, 1, GL_FALSE, &model[0][0]);
 		bindVAO(vao);
 
 		if (useTexture) {
-			glUniform1i(shader->useTextureLoc, true);
+			glUniform1i(shader.useTextureLoc, true);
 			glBindBuffer(GL_ARRAY_BUFFER, tex_vbo);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 8, texCoords);
 		}
 		else {
-			glUniform1i(shader->useTextureLoc, false);
-			glUniform3fv(shader->alphaLoc, 1, &alpha);
-			glUniform3fv(shader->colorLoc, 1, &color[0]);
+			glUniform1i(shader.useTextureLoc, false);
+			glUniform3fv(shader.alphaLoc, 1, &alpha);
+			glUniform3fv(shader.colorLoc, 1, &color[0]);
 		}
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -116,12 +120,14 @@ void ml::Sprite::draw() {
 	else {
 		model = glm::mat4(1.f);
 		model = glm::translate(model, glm::vec3(position, 0.f));
+		model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f));
 		model = glm::scale(model, glm::vec3(1.f, 1.f, 0.f));
-		glUniformMatrix4fv(shader->modelLoc, 1, GL_FALSE, &model[0][0]);
-		glUniform1i(shader->useTextureLoc, true);
-
+		glUniformMatrix4fv(shader.modelLoc, 1, GL_FALSE, &model[0][0]);
 
 		bindVAO(slice->vao);
+
+		glUniform1i(shader.useTextureLoc, true);
+
 		// vertex
 		glBindBuffer(GL_ARRAY_BUFFER, slice->vbo);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, 9 * sizeof(ml::quad), &slice->vertices[0]);

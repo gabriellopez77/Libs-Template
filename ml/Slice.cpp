@@ -2,7 +2,7 @@
 
 #include "../glad/glad.h"
 
-#include "Global.h"
+#include "MLGlobals.h"
 
 unsigned int ml::Slice::vao = 0;
 unsigned int ml::Slice::vbo = 0;
@@ -38,11 +38,11 @@ void ml::Slice::init() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
 	glBindBuffer(GL_ARRAY_BUFFER, tex_vbo);
 	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(quad), NULL, GL_DYNAMIC_DRAW);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
