@@ -6,7 +6,7 @@ uniform sampler2D myTexture;
 
 uniform vec3 color;
 uniform vec3 alpha;
-uniform bool useTexture = true;
+uniform bool useTexture;
 
 void main()
 {

@@ -97,39 +97,41 @@ void ml::Sprite::draw() {
 		model = glm::translate(model, glm::vec3(position, 0.f));
 		model = glm::scale(model, glm::vec3(size, 0.f));
 
-		glBindVertexArray(vao);
+		glUniformMatrix4fv(shader->modelLoc, 1, GL_FALSE, &model[0][0]);
+		bindVAO(vao);
+
+		if (useTexture) {
+			glUniform1i(shader->useTextureLoc, true);
+			glBindBuffer(GL_ARRAY_BUFFER, tex_vbo);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 8, texCoords);
+		}
+		else {
+			glUniform1i(shader->useTextureLoc, false);
+			glUniform3fv(shader->alphaLoc, 1, &alpha);
+			glUniform3fv(shader->colorLoc, 1, &color[0]);
+		}
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 	else {
 		model = glm::mat4(1.f);
 		model = glm::translate(model, glm::vec3(position, 0.f));
 		model = glm::scale(model, glm::vec3(1.f, 1.f, 0.f));
-		glBindVertexArray(slice->vao);
+		glUniformMatrix4fv(shader->modelLoc, 1, GL_FALSE, &model[0][0]);
+		glUniform1i(shader->useTextureLoc, true);
 
+
+		bindVAO(slice->vao);
+		// vertex
 		glBindBuffer(GL_ARRAY_BUFFER, slice->vbo);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, 9 * sizeof(ml::quad), &slice->vertices[0]);
 
+		// texture
 		glBindBuffer(GL_ARRAY_BUFFER, slice->tex_vbo);
-		glBindTexture(GL_TEXTURE_2D, textureID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, 9 * sizeof(ml::quad), &slice->tex[0]);
-	}
 
-	glUniformMatrix4fv(shader->modelLoc, 1, GL_FALSE, &model[0][0]);
-	if (useTexture) {
-		glUniform1i(shader->useTextureLoc, true);
-		glBindBuffer(GL_ARRAY_BUFFER, tex_vbo);
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 8, texCoords);
+		glDrawElements(GL_TRIANGLES, 54, GL_UNSIGNED_INT, 0);
 	}
-	else if (!slice) {
-		glUniform1i(shader->useTextureLoc, false);
-		glUniform3fv(shader->alphaLoc, 1, &alpha);
-		glUniform3fv(shader->colorLoc, 1, &color[0]);
-	}
-
-	if (!slice)
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	else
-		glDrawElements(GL_TRIANGLES, slice->vertices.size() * 6, GL_UNSIGNED_INT, 0);
 }
 
 void ml::Sprite::setSlice() {

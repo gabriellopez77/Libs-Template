@@ -20,8 +20,12 @@ namespace ml {
 
 		std::array<quad, 9> vertices;
 		std::array<quad, 9> tex;
+		float boardSize;
 
 		static unsigned int vao, vbo, ebo, tex_vbo;
 		static const unsigned int indices[54];
+
+	private:
+		glm::vec2 size = glm::vec2(0.f);
 	};
 }

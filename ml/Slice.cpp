@@ -21,7 +21,8 @@ const unsigned int ml::Slice::indices[54] = {
 };
 
 ml::Slice::Slice(float x, float y) {
-	setVertexSize(x, y);
+	size.x = x;
+	size.y = y;
 }
 
 void ml::Slice::init() {
@@ -49,13 +50,13 @@ void ml::Slice::init() {
 
 void ml::Slice::setVertexSize(float sizeX, float sizeY) {
 	float x1 = 0.f;
-	float x2 = SLICE_BOARD_SIZE;
-	float x3 = sizeX - SLICE_BOARD_SIZE;
+	float x2 = boardSize;
+	float x3 = sizeX - boardSize;
 	float x4 = sizeX;
 
 	float y1 = 0.f;
-	float y2 = SLICE_BOARD_SIZE;
-	float y3 = sizeY - SLICE_BOARD_SIZE;
+	float y2 = boardSize;
+	float y3 = sizeY - boardSize;
 	float y4 = sizeY;
 
 	vertices[8] = { {x3, y3}, {x3, y4}, {x4, y4}, {x4, y3} }; // 1
@@ -72,6 +73,9 @@ void ml::Slice::setVertexSize(float sizeX, float sizeY) {
 }
 
 void ml::Slice::setNormalizedTex(int posX, int posY, int width, int height, int corner) {
+	boardSize = corner * 3.f;
+	setVertexSize(size.x, size.y);
+
 	float cx = corner / TEXTURE_SPRITES_SIZE.x;
 	float cy = corner / TEXTURE_SPRITES_SIZE.y;
 
