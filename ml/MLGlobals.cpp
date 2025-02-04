@@ -2,7 +2,7 @@
 
 #include "../glad/glad.h"
 
-glm::vec2 TEXTURE_SPRITES_SIZE(128.f, 128.f);
+glm::vec2 TEXTURE_SPRITES_SIZE;
 
 void bindVAO(int vao) {
 	static int id;

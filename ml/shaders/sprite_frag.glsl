@@ -5,7 +5,7 @@ in vec2 TexCoord;
 uniform sampler2D myTexture;
 
 uniform vec3 color;
-uniform vec3 alpha;
+uniform float alpha;
 uniform bool useTexture;
 
 void main()
@@ -17,6 +17,7 @@ void main()
 		if (tex.a < 0.1f)
 			discard;
 
+		tex.a = alpha;
 		gl_FragColor = tex;
 	}
 	else

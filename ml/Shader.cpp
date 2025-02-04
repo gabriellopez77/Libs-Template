@@ -6,11 +6,10 @@
 #include "sstream"
 #include <iostream>
 
-Shader::Shader(const char* vertPath, const char* fragPath) {
+ml::Shader::Shader(const char* vertPath, const char* fragPath) {
 	if (vertPath == nullptr)
 		return;
 
-	std::cout << "CRIADO\n";
 	// leitura dos arquivos de shaders
 	std::string vertexCode;
 	std::string fragmentCode;

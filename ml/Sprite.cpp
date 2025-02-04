@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-Shader ml::Sprite::shader(nullptr, nullptr);
+ml::Shader ml::Sprite::shader(nullptr, nullptr);
 
 unsigned int ml::Sprite::vao = 1;
 unsigned int ml::Sprite::vbo = 1;
@@ -95,29 +95,7 @@ void ml::Sprite::draw() {
 	bindShader(shader.id);
 	bindTexture(textureID);
 
-	if (!slice) {
-		model = glm::mat4(1.f);
-		model = glm::translate(model, glm::vec3(position, 0.f));
-		model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f));
-		model = glm::scale(model, glm::vec3(size, 0.f));
-
-		glUniformMatrix4fv(shader.modelLoc, 1, GL_FALSE, &model[0][0]);
-		bindVAO(vao);
-
-		if (useTexture) {
-			glUniform1i(shader.useTextureLoc, true);
-			glBindBuffer(GL_ARRAY_BUFFER, tex_vbo);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 8, texCoords);
-		}
-		else {
-			glUniform1i(shader.useTextureLoc, false);
-			glUniform3fv(shader.alphaLoc, 1, &alpha);
-			glUniform3fv(shader.colorLoc, 1, &color[0]);
-		}
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	}
-	else {
+	if (slice) {
 		model = glm::mat4(1.f);
 		model = glm::translate(model, glm::vec3(position, 0.f));
 		model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f));
@@ -137,6 +115,34 @@ void ml::Sprite::draw() {
 		glBufferSubData(GL_ARRAY_BUFFER, 0, 9 * sizeof(ml::quad), &slice->tex[0]);
 
 		glDrawElements(GL_TRIANGLES, 54, GL_UNSIGNED_INT, 0);
+	}
+	else {
+		model = glm::mat4(1.f);
+		model = glm::translate(model, glm::vec3(position, 0.f));
+		model = glm::rotate(model, 0.f, glm::vec3(0.f, 0.f, 1.f));
+
+		model = glm::translate(model, glm::vec3(size.x * 0.5f, size.y * 0.5f, 0.f));
+		model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f));
+		model = glm::translate(model, glm::vec3(size.x * -0.5f, size.y * -0.5f, 0.f));
+
+		model = glm::scale(model, glm::vec3(size, 0.f));
+
+		glUniformMatrix4fv(shader.modelLoc, 1, GL_FALSE, &model[0][0]);
+		bindVAO(vao);
+
+		if (useTexture) {
+			glUniform1i(shader.useTextureLoc, true);
+			glUniform1f(shader.alphaLoc, alpha);
+			glBindBuffer(GL_ARRAY_BUFFER, tex_vbo);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 8, texCoords);
+		}
+		else {
+			glUniform1i(shader.useTextureLoc, false);
+			glUniform1f(shader.alphaLoc, alpha);
+			glUniform3fv(shader.colorLoc, 1, &color[0]);
+		}
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 }
 

@@ -21,12 +21,12 @@ namespace ml {
 		void setSlice();
 
 		// definicoes do sprite
-		static Shader shader;
+		static ml::Shader shader;
+		ml::Slice* slice = nullptr;
 		glm::vec2 position;
 		glm::vec3 color;
 		glm::vec2 size;
-		float rotate;
-		ml::Slice* slice = nullptr;
+		float rotate = 0.f;
 		float alpha = 1.f;
 		float texCoords[8] = { 0 };
 

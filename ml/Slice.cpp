@@ -38,38 +38,14 @@ void ml::Slice::init() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ARRAY_BUFFER, tex_vbo);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(quad), NULL, GL_DYNAMIC_DRAW);
-
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
+	glBindBuffer(GL_ARRAY_BUFFER, tex_vbo);
+	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(quad), NULL, GL_DYNAMIC_DRAW);
+
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
-};
-
-void ml::Slice::setVertexSize(float sizeX, float sizeY) {
-	float x1 = 0.f;
-	float x2 = boardSize;
-	float x3 = sizeX - boardSize;
-	float x4 = sizeX;
-
-	float y1 = 0.f;
-	float y2 = boardSize;
-	float y3 = sizeY - boardSize;
-	float y4 = sizeY;
-
-	vertices[8] = { {x3, y3}, {x3, y4}, {x4, y4}, {x4, y3} }; // 1
-	vertices[7] = { {x2, y3}, {x2, y4}, {x3, y4}, {x3, y3} }; // 2
-	vertices[6] = { {x1, y3}, {x1, y4}, {x2, y4}, {x2, y3} }; // 3
-
-	vertices[5] = { {x3, y2}, {x3, y3}, {x4, y3}, {x4, y2} }; // 4
-	vertices[4] = { {x2, y2}, {x2, y3}, {x3, y3}, {x3, y2} }; // 5
-	vertices[3] = { {x1, y2}, {x1, y3}, {x2, y3}, {x2, y2} }; // 6
-
-	vertices[2] = { {x3, y1}, {x3, y2}, {x4, y2}, {x4, y1} }; // 7
-	vertices[1] = { {x2, y1}, {x2, y2}, {x3, y2}, {x3, y1} }; // 8
-	vertices[0] = { {x1, y1}, {x1, y2}, {x2, y2}, {x2, y1} }; // 9
 }
 
 void ml::Slice::setNormalizedTex(int posX, int posY, int width, int height, int corner) {
@@ -96,4 +72,28 @@ void ml::Slice::setNormalizedTex(int posX, int posY, int width, int height, int 
 	tex[6] = { {left,		 bottom - cy}, {left,		 bottom		}, {left   + cx, bottom     }, {left   + cx, bottom - cy} };
 	tex[7] = { {left   + cx, bottom - cy}, {left   + cx, bottom		}, {right  - cx, bottom		}, {right  - cx, bottom - cy} };
 	tex[8] = { {right  - cx, bottom - cy}, {right  - cx, bottom		}, {right,		 bottom     }, {right,		 bottom - cy} };
+}
+
+void ml::Slice::setVertexSize(float sizeX, float sizeY) {
+	float x1 = 0.f;
+	float x2 = boardSize;
+	float x3 = sizeX - boardSize;
+	float x4 = sizeX;
+
+	float y1 = 0.f;
+	float y2 = boardSize;
+	float y3 = sizeY - boardSize;
+	float y4 = sizeY;
+
+	vertices[8] = { {x3, y3}, {x3, y4}, {x4, y4}, {x4, y3} }; // 1
+	vertices[7] = { {x2, y3}, {x2, y4}, {x3, y4}, {x3, y3} }; // 2
+	vertices[6] = { {x1, y3}, {x1, y4}, {x2, y4}, {x2, y3} }; // 3
+
+	vertices[5] = { {x3, y2}, {x3, y3}, {x4, y3}, {x4, y2} }; // 4
+	vertices[4] = { {x2, y2}, {x2, y3}, {x3, y3}, {x3, y2} }; // 5
+	vertices[3] = { {x1, y2}, {x1, y3}, {x2, y3}, {x2, y2} }; // 6
+
+	vertices[2] = { {x3, y1}, {x3, y2}, {x4, y2}, {x4, y1} }; // 7
+	vertices[1] = { {x2, y1}, {x2, y2}, {x3, y2}, {x3, y1} }; // 8
+	vertices[0] = { {x1, y1}, {x1, y2}, {x2, y2}, {x2, y1} }; // 9
 }
