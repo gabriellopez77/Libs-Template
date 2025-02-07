@@ -170,3 +170,16 @@ void ml::Sprite::setNormalizedTex(int posX, int posY, int width, int height) {
 	texCoords[6] = (posX + width) / TEXTURE_SPRITES_SIZE.x;
 	texCoords[7] = posY / TEXTURE_SPRITES_SIZE.y;
 }
+void ml::Sprite::setAnimatedSprite(int posX, int posY, int width, int height, int count, float delay, float dt) {
+	animationDelayTime += dt;
+	useTexture = true;
+
+	if (animationDelayTime >= delay) {
+		animationDelayTime = 0.f;
+		setNormalizedTex(posX += (width * animationStage), posY, width, height);
+		animationStage++;
+
+		if (animationStage == count)
+			animationStage = 0;
+	}
+}

@@ -4,6 +4,8 @@
 
 #include "MLGlobals.h"
 
+#include <iostream>
+
 unsigned int ml::Slice::vao = 0;
 unsigned int ml::Slice::vbo = 0;
 unsigned int ml::Slice::ebo = 0;

@@ -18,6 +18,7 @@ namespace ml {
 		static int getVao() { return vao; }
 
 		void setNormalizedTex(int posX, int posY, int width, int height);
+		void setAnimatedSprite(int posX, int posY, int width, int height, int count, float delay, float dt);
 		void setSlice();
 
 		// definicoes do sprite
@@ -31,6 +32,9 @@ namespace ml {
 		float texCoords[8] = { 0 };
 
 	protected:
+		float animationDelayTime = 0.f;
+		unsigned short animationStage = 0;
+
 		bool useTexture = false;
 
 		static glm::mat4 model;
