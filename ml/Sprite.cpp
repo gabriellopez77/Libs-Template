@@ -30,6 +30,13 @@ size(0.f)
 void ml::Sprite::init(const char* texturePath) {
 	ml::Slice::init();
 
+	// definicoes do opengl
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CW);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	shader = Shader("dependencies/ml/shaders/sprite_vert.glsl", "dependencies/ml/shaders/sprite_frag.glsl");
 	glUseProgram(shader.id);
 
@@ -105,6 +112,7 @@ void ml::Sprite::draw() {
 		bindVAO(slice->vao);
 
 		glUniform1i(shader.useTextureLoc, true);
+		glUniform1f(shader.alphaLoc, alpha);
 
 		// vertex
 		glBindBuffer(GL_ARRAY_BUFFER, slice->vbo);

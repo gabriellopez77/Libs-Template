@@ -16,27 +16,39 @@ ml::Shader::Shader(const char* vertPath, const char* fragPath) {
 	std::ifstream vShaderFile;
 	std::ifstream fShaderFile;
 
-	// abre os arquivos
-	vShaderFile.open(vertPath);
-	fShaderFile.open(fragPath);
+	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-	// le os arquivos
-	std::stringstream vShaderStream, fShaderStream;
-	vShaderStream << vShaderFile.rdbuf();
-	fShaderStream << fShaderFile.rdbuf();
+	try {
+		// abre os arquivos
+		vShaderFile.open(vertPath);
+		fShaderFile.open(fragPath);
 
-	// fecha os arquivos
-	vShaderFile.close();
-	fShaderFile.close();
+		// le os arquivos
+		std::stringstream vShaderStream, fShaderStream;
+		vShaderStream << vShaderFile.rdbuf();
+		fShaderStream << fShaderFile.rdbuf();
 
-	// converte o conteudo dos arquivos em uma string
-	vertexCode = vShaderStream.str();
-	fragmentCode = fShaderStream.str();
+		// fecha os arquivos
+		vShaderFile.close();
+		fShaderFile.close();
 
-	// pega o ponteiro dos arquivos convertidos em string
+		vertexCode = vShaderStream.str();
+		fragmentCode = fShaderStream.str();
+
+		// converte o conteudo dos arquivos em uma string
+		vertexCode = vShaderStream.str();
+		fragmentCode = fShaderStream.str();
+	}
+	catch (std::ifstream::failure& e) {
+		std::cout << "ERRO AO LER ARQUIVOS\n";
+	}
+
 	const char* vert = vertexCode.c_str();
 	const char* frag = fragmentCode.c_str();
 
+	int compileStatus;
+	char infoLog[512];
 
 	// compila��o dos shaders
 	unsigned int vertShader;
@@ -46,9 +58,25 @@ ml::Shader::Shader(const char* vertPath, const char* fragPath) {
 	glShaderSource(vertShader, 1, &vert, NULL);
 	glCompileShader(vertShader);
 
+	glGetShaderiv(vertShader, GL_COMPILE_STATUS, &compileStatus);
+
+	if (!compileStatus) {
+		glGetShaderInfoLog(vertShader, 512, NULL, infoLog);
+		std::cout << "VERT ERROR!!!\n" << infoLog << '\n';
+		return;
+	}
+
 	fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragShader, 1, &frag, NULL);
 	glCompileShader(fragShader);
+
+	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &compileStatus);
+
+	if (!compileStatus) {
+		glGetShaderInfoLog(fragShader, 512, NULL, infoLog);
+		std::cout << "FRAG ERROR!!!\n" << infoLog << '\n';
+		return;
+	}
 
 	id = glCreateProgram();
 	glAttachShader(id, vertShader);
