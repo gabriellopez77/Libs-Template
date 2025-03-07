@@ -5,22 +5,28 @@
 glm::vec2 TEXTURE_SPRITES_SIZE;
 
 void bindVAO(int vao) {
-	static int id;
-	glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &id);
-	if (id != vao)
-		glBindVertexArray(vao);
+	static int id = 0;
+
+	if (id != vao) {
+		id = vao;
+		glBindVertexArray(id);
+	}
 }
 
 void bindShader(int shader) {
-	static int id;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &id);
-	if (shader != id)
-		glUseProgram(shader);
+	static int id = 0;
+
+	if (id != shader) {
+		id = shader;
+		glUseProgram(id);
+	}
 }
 
 void bindTexture(int texture) {
-	static int id;
-	glGetIntegerv(GL_TEXTURE_BINDING_2D, &id);
-	if (id != texture)
-		glBindTexture(GL_TEXTURE_2D, texture);
+	static int id = 0;
+
+	if (id != texture) {
+		id = texture;
+		glBindTexture(GL_TEXTURE_2D, id);
+	}
 }

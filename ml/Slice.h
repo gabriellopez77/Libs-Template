@@ -3,17 +3,17 @@
 #include "../glm/glm.hpp"
 
 namespace ml {
-	struct quad {
+	struct quad final {
 		glm::vec2 a, b, c, d;
 	};
 
-	class Slice {
+	class Slice final {
 	public:
 		Slice(float x, float y);
 
 		static void init();
 
-		void setNormalizedTex(int posX, int posY, int width, int height, int corner);
+		void setNormalizedTex(int posX, int posY, int width, int height, int corner, int pixelSize = 3);
 		void setVertexSize(float sizeX, float sizeY);
 
 		quad vertices[9];

@@ -17,7 +17,7 @@ namespace ml {
 		static glm::vec3 convertColor(unsigned char r, unsigned char g, unsigned char b) { return { r / 255.f, g / 255.f, b / 255.f }; }
 		static int getVao() { return vao; }
 
-		void setNormalizedTex(int posX, int posY, int width, int height);
+		void setNormalizedTex(float posX, float posY, float width, float height);
 		void setAnimatedSprite(int posX, int posY, int width, int height, int count, float delay, float dt);
 		void setSlice();
 

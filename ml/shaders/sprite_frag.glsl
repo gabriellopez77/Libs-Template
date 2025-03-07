@@ -17,7 +17,7 @@ void main()
 		if (tex.a < 0.1f)
 			discard;
 
-		tex.a = alpha;
+		tex.a *= alpha;
 		gl_FragColor = tex;
 	}
 	else

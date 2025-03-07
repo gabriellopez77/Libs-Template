@@ -50,8 +50,8 @@ void ml::Slice::init() {
 	glEnableVertexAttribArray(1);
 }
 
-void ml::Slice::setNormalizedTex(int posX, int posY, int width, int height, int corner) {
-	boardSize = corner * 3.f;
+void ml::Slice::setNormalizedTex(int posX, int posY, int width, int height, int corner, int pixelSize) {
+	boardSize = corner * pixelSize;
 	setVertexSize(size.x, size.y);
 
 	float cx = corner / TEXTURE_SPRITES_SIZE.x;

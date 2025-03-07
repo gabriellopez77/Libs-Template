@@ -11,10 +11,10 @@
 
 ml::Shader ml::Sprite::shader(nullptr, nullptr);
 
-unsigned int ml::Sprite::vao = 1;
-unsigned int ml::Sprite::vbo = 1;
-unsigned int ml::Sprite::ebo = 1;
-unsigned int ml::Sprite::tex_vbo = 1;
+unsigned int ml::Sprite::vao = 0;
+unsigned int ml::Sprite::vbo = 0;
+unsigned int ml::Sprite::ebo = 0;
+unsigned int ml::Sprite::tex_vbo = 0;
 
 unsigned char* ml::Sprite::data = nullptr;
 unsigned int ml::Sprite::textureID = 0;
@@ -67,6 +67,7 @@ void ml::Sprite::init(const char* texturePath) {
 	int nr;
 	int x2;
 	int y2;
+
 	data = stbi_load(texturePath, &x2, &y2, &nr, 0);
 
 	if (!data) {
@@ -82,16 +83,14 @@ void ml::Sprite::init(const char* texturePath) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	float color[]{ 1.f, 1.f, 1.f, 1.f };
+	float color[]{ 1.f, 1.f, 0.f, 1.f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
 
 	// define o tipo de mipmap
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-
-	// define o filtro da image
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXTURE_SPRITES_SIZE.x, TEXTURE_SPRITES_SIZE.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x2, y2, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// liberar a imagem da memoria
@@ -127,12 +126,7 @@ void ml::Sprite::draw() {
 	else {
 		model = glm::mat4(1.f);
 		model = glm::translate(model, glm::vec3(position, 0.f));
-		model = glm::rotate(model, 0.f, glm::vec3(0.f, 0.f, 1.f));
-
-		model = glm::translate(model, glm::vec3(size.x * 0.5f, size.y * 0.5f, 0.f));
 		model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.f, 0.f, 1.f));
-		model = glm::translate(model, glm::vec3(size.x * -0.5f, size.y * -0.5f, 0.f));
-
 		model = glm::scale(model, glm::vec3(size, 0.f));
 
 		glUniformMatrix4fv(shader.modelLoc, 1, GL_FALSE, &model[0][0]);
@@ -159,25 +153,28 @@ void ml::Sprite::setSlice() {
 		slice = new Slice(size.x, size.y);
 }
 
-void ml::Sprite::setNormalizedTex(int posX, int posY, int width, int height) {
+void ml::Sprite::setNormalizedTex(float posX, float posY, float width, float height) {
 	useTexture = true;
 
+	float b = 0.0001f;
+
 	// top right
-	texCoords[0] = posX / TEXTURE_SPRITES_SIZE.x;
-	texCoords[1] = posY / TEXTURE_SPRITES_SIZE.y;
+	texCoords[0] = posX / TEXTURE_SPRITES_SIZE.x + b;
+	texCoords[1] = posY / TEXTURE_SPRITES_SIZE.y + b;
 
 	// bottom right
-	texCoords[2] = posX / TEXTURE_SPRITES_SIZE.x;
-	texCoords[3] = (posY + height) / TEXTURE_SPRITES_SIZE.y;
+	texCoords[2] = posX / TEXTURE_SPRITES_SIZE.x + b;
+	texCoords[3] = (posY + height) / TEXTURE_SPRITES_SIZE.y - b;
 
 	// bottom left
-	texCoords[4] = (posX + width) / TEXTURE_SPRITES_SIZE.x;
-	texCoords[5] = (posY + height) / TEXTURE_SPRITES_SIZE.y;
+	texCoords[4] = (posX + width) / TEXTURE_SPRITES_SIZE.x - b;
+	texCoords[5] = (posY + height) / TEXTURE_SPRITES_SIZE.y - b;
 
 	// top left
-	texCoords[6] = (posX + width) / TEXTURE_SPRITES_SIZE.x;
-	texCoords[7] = posY / TEXTURE_SPRITES_SIZE.y;
+	texCoords[6] = (posX + width) / TEXTURE_SPRITES_SIZE.x - b;
+	texCoords[7] = posY / TEXTURE_SPRITES_SIZE.y + b;
 }
+
 void ml::Sprite::setAnimatedSprite(int posX, int posY, int width, int height, int count, float delay, float dt) {
 	animationDelayTime += dt;
 	useTexture = true;
